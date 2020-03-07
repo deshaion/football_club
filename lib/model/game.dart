@@ -1,3 +1,4 @@
+import 'package:football_club/utils/date_util.dart';
 import 'package:hive/hive.dart';
 
 part 'game.g.dart';
@@ -13,7 +14,7 @@ class Game extends HiveObject {
   @HiveField(6) int score_team2_period2;
   @HiveField(7) int teamWinByPenalty;
 
-  Game.empty() : this(DateTime.now().millisecondsSinceEpoch, [], [], 0, 0, 0, 0, 0);
+  Game.empty() : this(today(), [], [], 0, 0, 0, 0, 0);
 
   Game(this.date, this.team1, this.team2, this.score_team1_period1,
       this.score_team1_period2, this.score_team2_period1,
@@ -24,6 +25,6 @@ class Game extends HiveObject {
       game.score_team2_period2, game.teamWinByPenalty
   );
 
-  String get score => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2}" + (teamWinByPenalty == 0 ? "" : " Team ${teamWinByPenalty} win");
+  String get score => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2} ($score_team1_period1 : $score_team2_period1)" + (teamWinByPenalty == 0 ? "" : " Team ${teamWinByPenalty} win");
   String get scoreShort => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2}";
 }

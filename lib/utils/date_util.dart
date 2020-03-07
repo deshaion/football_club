@@ -24,3 +24,8 @@ String getShortDate(int millis) {
   DateTime date = DateTime.fromMillisecondsSinceEpoch(millis);
   return "${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}";
 }
+
+int today() {
+  final now = DateTime.now();
+  return new DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+}

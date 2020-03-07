@@ -45,9 +45,9 @@ class ScoreModel with ChangeNotifier {
       _updateScore(game, false);
     }
 
-    if (gamesCount > 16) { // check inRaiting
+    if (gamesCount > 17) { // check inRaiting
       for (ScoreRow row in _score) {
-        if (row.gameAmount * 3 < gamesCount) {
+        if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) {
           row.type = 1;
         }
       }
@@ -82,9 +82,9 @@ class ScoreModel with ChangeNotifier {
       }
     }
 
-    if (gamesCount > 16) { // check inRaiting
+    if (gamesCount > 17) { // check inRaiting
       for (ScoreRow row in _score) {
-        if (row.gameAmount * 3 < gamesCount) {
+        if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) {
           row.type = 1;
         }
       }

@@ -67,9 +67,10 @@ class DateRow extends StatelessWidget {
   }
 
   Future<Null> _selectDate(BuildContext context, GameEditModel model) async {
+    final now = DateTime.now();
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: new DateTime(now.year, now.month, now.day),
         firstDate: DateTime(2017, 1),
         lastDate: DateTime(2030));
     if (picked != null) {
