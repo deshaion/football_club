@@ -84,6 +84,9 @@ class ScoreModel with ChangeNotifier {
 
     if (gamesCount > 17) { // check inRaiting
       for (ScoreRow row in _score) {
+        if (row.type == 1) {
+          row.type = 0;
+        }
         if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) {
           row.type = 1;
         }
