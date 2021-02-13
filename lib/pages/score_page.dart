@@ -90,7 +90,7 @@ class Footer extends StatelessWidget {
     ];
 
     for (var lastGame in _lastGames.reversed) {
-      cells.add(SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_LAST_GAME, child: Align(alignment: Alignment.topCenter, child: Text(lastGame, style: TextStyle(fontSize: 8)))));
+      cells.add(SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_LAST_GAME, child: Align(alignment: Alignment.topCenter, child: Text(lastGame))));
     }
 
     return Row(children: cells);

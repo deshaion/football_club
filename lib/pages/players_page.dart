@@ -27,12 +27,13 @@ class Players extends StatelessWidget {
                 itemCount: model.getPlayers().length,
                 itemBuilder: (context, index) {
                   Player player = model.getPlayers()[index];
-                  return PlayerItem(
-                    player: player,
-                    isNameEditable: index == model.indexOfEdit,
-                    onTapName: () => model.setEditMode(index),
-                    onTapInClub: () => model.changeInClub(player),
-                    onEditName: (String value) => model.changeName(player, value),
+                  return DismissiblePlayerItem(
+                      player: player,
+                      isNameEditable: index == model.indexOfEdit,
+                      onTapName: () => model.setEditMode(index),
+                      onTapInClub: () => model.changeInClub(player),
+                      onEditName: (String value) => model.changeName(player, value),
+                      onDismissed: (DismissDirection direction) => model.remove(index, player)
                 );
               })
             )
@@ -53,6 +54,27 @@ class NewPlayer extends StatelessWidget {
     return isWithNew ?
     TextField(onSubmitted: (String value) {onSave(value);},)
         : Container(width: 0.0, height: 0.0);
+  }
+}
+
+class DismissiblePlayerItem extends StatelessWidget {
+  final Player player;
+  final Function onTapName;
+  final Function onTapInClub;
+  final Function onEditName;
+  final bool isNameEditable;
+  final Function onDismissed;
+
+  DismissiblePlayerItem({this.player, this.isNameEditable, this.onTapName, this.onTapInClub, this.onEditName, this.onDismissed});
+
+  @override
+  Widget build(BuildContext context) {
+    return new Dismissible(
+        resizeDuration: null,
+        onDismissed: onDismissed,
+        key: new ValueKey(player),
+        child: PlayerItem(player: player, isNameEditable: isNameEditable, onTapName: onTapName, onTapInClub: onTapInClub, onEditName: onEditName)
+    );
   }
 }
 

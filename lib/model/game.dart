@@ -26,5 +26,5 @@ class Game extends HiveObject {
   );
 
   String get score => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2} ($score_team1_period1 : $score_team2_period1)" + (teamWinByPenalty == 0 ? "" : " Team ${teamWinByPenalty} win");
-  String get scoreShort => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2}";
+  String get scoreShort => "${score_team1_period1 + score_team1_period2}:${score_team2_period1 + score_team2_period2}";
 }

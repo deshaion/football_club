@@ -67,6 +67,11 @@ class PlayersModel with ChangeNotifier {
     notifyListeners();
   }
 
+  remove(int index, Player player) {
+    player.delete();
+    notifyListeners();
+  }
+
   String teamDescription(List<int> team) {
     if (team.isEmpty) {
       return "Empty";

@@ -45,9 +45,15 @@ class ScoreModel with ChangeNotifier {
       _updateScore(game, false);
     }
 
-    if (gamesCount > 17) { // check inRaiting
+    int totalGamesForBeingInRating = 60; //TODO move to season settings
+    int remain = gameDaysTillSeasonEnd(lastDate, totalGamesForBeingInRating) * 2 + 2;
+
+    if (gamesCount > 17) { // check inRaiting //TODO move to season settings
       for (ScoreRow row in _score) {
-        if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) {
+        if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) { //TODO move to season settings
+          row.type = 1;
+        }
+        if (row.type == 0 && (row.gameAmount + remain < totalGamesForBeingInRating)) {
           row.type = 1;
         }
       }
@@ -82,12 +88,16 @@ class ScoreModel with ChangeNotifier {
       }
     }
 
+    remain -= 2;
     if (gamesCount > 17) { // check inRaiting
       for (ScoreRow row in _score) {
         if (row.type == 1) {
           row.type = 0;
         }
-        if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) {
+        if (row.type == 0 && (row.gameAmount * 100 < gamesCount * 40)) {
+          row.type = 1;
+        }
+        if (row.type == 0 && (row.gameAmount + remain < totalGamesForBeingInRating)) {
           row.type = 1;
         }
       }
@@ -146,6 +156,16 @@ class ScoreModel with ChangeNotifier {
     num pointsTransferTeam2Begin = (
             _calcPoints(game.score_team2_period1, game.score_team1_period1, false, playersInTeam) +
             _calcPoints(game.score_team1_period2, game.score_team2_period2, false, playersInTeam)) / 2;
+    if (game.date < new DateTime(2021, 2, 7).millisecondsSinceEpoch) {
+      pointsTeam1 = _calcPointsOld(game.score_team1_period1 + game.score_team1_period2, game.score_team2_period1 + game.score_team2_period2, game.teamWinByPenalty == 1, playersInTeam);
+      pointsTeam2 = _calcPointsOld(game.score_team2_period1 + game.score_team2_period2, game.score_team1_period1 + game.score_team1_period2, game.teamWinByPenalty == 2, playersInTeam);
+      pointsTransferTeam1Begin = (
+            _calcPointsOld(game.score_team1_period1, game.score_team2_period1, false, playersInTeam) +
+            _calcPointsOld(game.score_team2_period2, game.score_team1_period2, false, playersInTeam)) / 2;
+      pointsTransferTeam2Begin = (
+            _calcPointsOld(game.score_team2_period1, game.score_team1_period1, false, playersInTeam) +
+            _calcPointsOld(game.score_team1_period2, game.score_team2_period2, false, playersInTeam)) / 2;
+    }
 
     for(var i = 0; i < playersInTeam; i++) {
       _score[game.team1[i]].gameAmount++;
@@ -189,9 +209,20 @@ class ScoreModel with ChangeNotifier {
     } else if (score2 > score1) {
       print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = 1");
       return 1;
-    } else if (playersInTeam > 3) {
-      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${2 + ((score1 - score2) / 3).floor()}");
-      return 2 + ((score1 - score2) / 3).floor();
+    } else if (playersInTeam > 3) { // rule 3, 3, 4, 4, 4
+      num points = 2;
+      int diff = score1 - score2;
+      if (diff >= 3) {
+        points++;
+        diff -= 3;
+      }
+      if (diff >= 3) {
+        points++;
+        diff -= 3;
+      }
+      points += (diff / 4).floor();
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${points}");
+      return points;
     } else { // players in team are 3
       num points = 2;
       int diff = score1 - score2;
@@ -205,5 +236,51 @@ class ScoreModel with ChangeNotifier {
       print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${points + (diff / 4).floor()}");
       return points + (diff / 4).floor();
     }
+  }
+
+  num _calcPointsOld(int score1, int score2, bool teamWinByPenalty, int playersInTeam) {
+    if (score1 == score2) {
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${teamWinByPenalty ? 2 : 1.5}");
+      return teamWinByPenalty ? 2 : 1.5;
+    } else if (score2 > score1) {
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = 1");
+      return 1;
+    } else if (playersInTeam > 3) { // rule 3, 3, 3, 3, 3
+      num points = 2;
+      int diff = score1 - score2;
+      points += (diff / 3).floor();
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${points}");
+      return points;
+    } else { // players in team are 3
+      num points = 2;
+      int diff = score1 - score2;
+      if (diff >= 5) {
+        points++;
+      }
+      diff -= 5;
+      if (diff < 0) {
+        diff = 0;
+      }
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${points + (diff / 4).floor()}");
+      return points + (diff / 4).floor();
+    }
+  }
+
+  gameDaysTillSeasonEnd(int lastDate, int totalGamesForBeingInRating) {
+    if (lastDate == null) {
+      return totalGamesForBeingInRating;
+    }
+    int count = 0;
+    DateTime nextWeek = DateTime.fromMillisecondsSinceEpoch(lastDate);
+    int currentYear = nextWeek.year;
+    while (true) {
+      nextWeek = nextWeek.add(new Duration(days: 7));
+      if (nextWeek.year > currentYear) {
+        break;
+      }
+      count++;
+    }
+
+    return count;
   }
 }
