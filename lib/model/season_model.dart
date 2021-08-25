@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 
 class SeasonModel with ChangeNotifier {
   String activeSeason;
+  int expandedIndex = -1;
   List<String> seasons = [];
   bool isWithNew = false;
 
@@ -44,5 +45,10 @@ class SeasonModel with ChangeNotifier {
     } else {
       return activeSeason;
     }
+  }
+
+  void expand(int index) {
+    expandedIndex = index;
+    notifyListeners();
   }
 }
