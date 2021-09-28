@@ -15,10 +15,19 @@ class SeasonModel with ChangeNotifier {
   bool isWithNew = false;
   String backupPath = "";
 
+  int totalGamesForBeingInRating;
+  int amountOfGamesForCheckingInRating;
+  int percentForBeingInRating;
+  int remainGamesForChecking;
+
   SeasonModel() {
     var settingsBox = Hive.box(Hive_Settings);
     activeSeason = settingsBox.get("activeSeason");
     backupPath = settingsBox.get("backupPath");
+    totalGamesForBeingInRating = settingsBox.get("totalGamesForBeingInRating", defaultValue: 60);
+    amountOfGamesForCheckingInRating = settingsBox.get("amountOfGamesForCheckingInRating", defaultValue: 17);
+    percentForBeingInRating = settingsBox.get("percentForBeingInRating", defaultValue: 40);
+    remainGamesForChecking = settingsBox.get("remainGamesForChecking", defaultValue: 16);
 
     var seasonBox = Hive.box<String>(Hive_Seasons);
     seasons = seasonBox.values.toList();
@@ -121,5 +130,29 @@ class SeasonModel with ChangeNotifier {
       players.notifyListeners();
       games.notifyListeners();
     }
+  }
+
+  setTotalGamesForBeingInRating(int index, int value) {
+    totalGamesForBeingInRating = value;
+    var settingsBox = Hive.box(Hive_Settings);
+    settingsBox.put("totalGamesForBeingInRating", totalGamesForBeingInRating);
+  }
+
+  setPercentForBeingInRating(int index, int value) {
+    percentForBeingInRating = value;
+    var settingsBox = Hive.box(Hive_Settings);
+    settingsBox.put("percentForBeingInRating", percentForBeingInRating);
+  }
+
+  setAmountOfGamesForCheckingInRating(int index, int value) {
+    amountOfGamesForCheckingInRating = value;
+    var settingsBox = Hive.box(Hive_Settings);
+    settingsBox.put("amountOfGamesForCheckingInRating", amountOfGamesForCheckingInRating);
+  }
+
+  setRemainGamesForChecking(int index, int value) {
+    remainGamesForChecking = value;
+    var settingsBox = Hive.box(Hive_Settings);
+    settingsBox.put("remainGamesForChecking", remainGamesForChecking);
   }
 }

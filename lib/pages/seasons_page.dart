@@ -40,6 +40,14 @@ class Seasons extends StatelessWidget {
                     backupPath: model.backupPath,
                     onDump: () => model.doBackup(index, games.serialize(model.seasons[index]), players.serialize(model.seasons[index])),
                     onRestore: () => model.restore(index, games, players),
+                    totalGamesForBeingInRating: model.totalGamesForBeingInRating.toString(),
+                    percentForBeingInRating: model.percentForBeingInRating.toString(),
+                    amountOfGamesForCheckingInRating: model.amountOfGamesForCheckingInRating.toString(),
+                    remainGamesForChecking: model.remainGamesForChecking.toString(),
+                    onUpdateTotalGames: (String value) => model.setTotalGamesForBeingInRating(index, int.parse(value)),
+                    onUpdatePercent: (String value) => model.setPercentForBeingInRating(index, int.parse(value)),
+                    onUpdateStartChecking: (String value) => model.setAmountOfGamesForCheckingInRating(index, int.parse(value)),
+                    onUpdateRemainChecking: (String value) => model.setRemainGamesForChecking(index, int.parse(value)),
                 ))
             )
           ]);
@@ -73,15 +81,31 @@ class SeasonItem extends StatelessWidget {
   final Function onDump;
   final Function onRestore;
 
+  final String totalGamesForBeingInRating;
+  final String amountOfGamesForCheckingInRating;
+  final String percentForBeingInRating;
+  final String remainGamesForChecking;
+
+  final Function onUpdateTotalGames;
+  final Function onUpdatePercent;
+  final Function onUpdateStartChecking;
+  final Function onUpdateRemainChecking;
+
   SeasonItem({this.name, this.onTap, this.onActivate, this.active, this.expanded,
-    this.onSavePathToBackup, this.backupPath, this.onDump, this.onRestore});
+    this.onSavePathToBackup, this.backupPath, this.onDump, this.onRestore,
+    this.totalGamesForBeingInRating, this.percentForBeingInRating, this.amountOfGamesForCheckingInRating, this.remainGamesForChecking,
+    this.onUpdateTotalGames, this.onUpdatePercent, this.onUpdateStartChecking, this.onUpdateRemainChecking
+  });
 
   @override
   Widget build(BuildContext context) {
     if (expanded) {
       return Column(children: [
         SeasonNameItem(name: name, onTap: onTap, active: active),
-        SeasonPropertiesItem(onActivate: onActivate, onSavePathToBackup: onSavePathToBackup, backupPath: backupPath, onDump: onDump, onRestore: onRestore),
+        SeasonPropertiesItem(onActivate, backupPath, onSavePathToBackup, onDump, onRestore,
+            totalGamesForBeingInRating, percentForBeingInRating, amountOfGamesForCheckingInRating, remainGamesForChecking,
+            onUpdateTotalGames, onUpdatePercent, onUpdateStartChecking, onUpdateRemainChecking,
+        ),
       ]);
     } else {
       return SeasonNameItem(name: name, onTap: onTap, active: active,);
@@ -125,7 +149,19 @@ class SeasonPropertiesItem extends StatelessWidget {
   final Function onDump;
   final Function onRestore;
 
-  SeasonPropertiesItem({this.onActivate, this.onSavePathToBackup, this.backupPath, this.onDump, this.onRestore});
+  final String totalGamesForBeingInRating;
+  final String amountOfGamesForCheckingInRating;
+  final String percentForBeingInRating;
+  final String remainGamesForChecking;
+
+  final Function onUpdateTotalGames;
+  final Function onUpdatePercent;
+  final Function onUpdateStartChecking;
+  final Function onUpdateRemainChecking;
+
+  SeasonPropertiesItem(this.onActivate, this.backupPath, this.onSavePathToBackup, this.onDump, this.onRestore,
+      this.totalGamesForBeingInRating, this.percentForBeingInRating, this.amountOfGamesForCheckingInRating, this.remainGamesForChecking,
+      this.onUpdateTotalGames, this.onUpdatePercent, this.onUpdateStartChecking, this.onUpdateRemainChecking);
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +180,10 @@ class SeasonPropertiesItem extends StatelessWidget {
       child: Column(children: [
         Row(children: [ButtonItem("Activate", onActivate)]),
         BackupItem(onSavePathToBackup, backupPath, onDump, onRestore),
+        Container(child: Row(children: [Text("Games for rating: "),Expanded(child: TextField(controller: TextEditingController(text: totalGamesForBeingInRating), onSubmitted: onUpdateTotalGames))])),
+        Container(child: Row(children: [Text("Percent for rating: "),Expanded(child: TextField(controller: TextEditingController(text: percentForBeingInRating), onSubmitted: onUpdatePercent))])),
+        Container(child: Row(children: [Text("Start check from: "),Expanded(child: TextField(controller: TextEditingController(text: amountOfGamesForCheckingInRating), onSubmitted: onUpdateStartChecking))])),
+        Container(child: Row(children: [Text("Check when remain: "),Expanded(child: TextField(controller: TextEditingController(text: remainGamesForChecking), onSubmitted: onUpdateRemainChecking))])),
       ],)
     );
   }

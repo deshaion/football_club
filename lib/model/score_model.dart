@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:football_club/model/game.dart';
 import 'package:football_club/model/player.dart';
 import 'package:football_club/model/score_row.dart';
+import 'package:football_club/model/season_model.dart';
 import 'package:football_club/utils/date_util.dart';
 
 class ScoreModel with ChangeNotifier {
@@ -14,6 +15,8 @@ class ScoreModel with ChangeNotifier {
   List<String> get lastGames => _lastGames;
   List<String> get lastGamesScores => _lastGamesScores;
   List<ScoreRow> get scoreList => _score;
+  String _info;
+  String get info => _info;
 
   void updateGames(List<Game> games) {
     _games = games;
@@ -21,8 +24,12 @@ class ScoreModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void calcScore(List<Player> players) {
-    print("Players count ${players.length}");
+  void calcScore(List<Player> players, SeasonModel season) {
+    int totalGamesForBeingInRating = season.totalGamesForBeingInRating;
+    int amountOfGamesForCheckingInRating = season.amountOfGamesForCheckingInRating;
+    int percentForBeingInRating = season.percentForBeingInRating;
+    int remainGamesForChecking = season.remainGamesForChecking;
+
     _score = [];
 
     for(var i = 0; i < players.length; i++) {
@@ -45,15 +52,14 @@ class ScoreModel with ChangeNotifier {
       _updateScore(game, false);
     }
 
-    int totalGamesForBeingInRating = 60; //TODO move to season settings
     int remain = gameDaysTillSeasonEnd(lastDate, totalGamesForBeingInRating) * 2 + 2;
 
-    if (gamesCount > 17) { // check inRaiting //TODO move to season settings
+    if (gamesCount >= amountOfGamesForCheckingInRating) { // check inRaiting
       for (ScoreRow row in _score) {
-        if (row.type == 0 && row.gameAmount * 100 < gamesCount * 40) { //TODO move to season settings
+        if (row.type == 0 && row.gameAmount * 100 < gamesCount * percentForBeingInRating) {
           row.type = 1;
         }
-        if (row.type == 0 && (row.gameAmount + remain < totalGamesForBeingInRating)) {
+        if (row.type == 0 && remain <= remainGamesForChecking && (row.gameAmount + remain < totalGamesForBeingInRating)) {
           row.type = 1;
         }
       }
@@ -89,15 +95,15 @@ class ScoreModel with ChangeNotifier {
     }
 
     remain -= 2;
-    if (gamesCount > 17) { // check inRaiting
+    if (gamesCount >= amountOfGamesForCheckingInRating) { // check inRaiting
       for (ScoreRow row in _score) {
         if (row.type == 1) {
           row.type = 0;
         }
-        if (row.type == 0 && (row.gameAmount * 100 < gamesCount * 40)) {
+        if (row.type == 0 && (row.gameAmount * 100 < gamesCount * percentForBeingInRating)) {
           row.type = 1;
         }
-        if (row.type == 0 && (row.gameAmount + remain < totalGamesForBeingInRating)) {
+        if (row.type == 0 && remain <= remainGamesForChecking && (row.gameAmount + remain < totalGamesForBeingInRating)) {
           row.type = 1;
         }
       }
@@ -112,6 +118,7 @@ class ScoreModel with ChangeNotifier {
       }
     }
 
+    _info = "Всего игр: $gamesCount Осталось: $remain";
     ScoreRow footer = ScoreRow(null, false);
     footer.type = 3;
     _score.add(footer);

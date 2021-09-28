@@ -3,6 +3,7 @@ import 'package:football_club/model/player.dart';
 import 'package:football_club/model/players_model.dart';
 import 'package:football_club/model/score_model.dart';
 import 'package:football_club/model/score_row.dart';
+import 'package:football_club/model/season_model.dart';
 import 'package:football_club/pages/base_page.dart';
 import 'package:provider/provider.dart';
 
@@ -25,8 +26,8 @@ class Score extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container (
-        child: Consumer2<ScoreModel, PlayersModel>(builder: (context, score, players, child) {
-          score.calcScore(players.getPlayers());
+        child: Consumer3<ScoreModel, PlayersModel, SeasonModel>(builder: (context, score, players, season, child) {
+          score.calcScore(players.getPlayers(), season);
           return Column(children: <Widget>[
             Header(score.lastGames),
             Expanded(child:
@@ -36,7 +37,7 @@ class Score extends StatelessWidget {
                   ScoreRow row = score.scoreList[index];
 
                   if (row.type == 3) {
-                    return Footer(score.lastGamesScores);
+                    return Footer(score.lastGamesScores, score.info);
                   }
 
                   return ScoreItem(row, index, players.getPlayers()[row.playerId]);
@@ -75,22 +76,29 @@ class Header extends StatelessWidget {
 
 class Footer extends StatelessWidget {
   List<String> _lastGames;
+  String _info;
 
-  Footer(this._lastGames);
+  Footer(this._lastGames, this._info);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> cells = [
-      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_POSITION),
-      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_CHANGE),
-      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_NAME),
-      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_POINTS),
-      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_GAMES),
-      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_RATING)
+      SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_POSITION + WIDTH_CHANGE + WIDTH_NAME + WIDTH_POINTS + WIDTH_GAMES + WIDTH_RATING,
+          child: Align(alignment: Alignment.bottomLeft, child: Text(_info, style: TextStyle(fontSize: 12)))),
     ];
 
     for (var lastGame in _lastGames.reversed) {
-      cells.add(SizedBox(height: DEFAULT_HEIGHT, width: WIDTH_LAST_GAME, child: Align(alignment: Alignment.topCenter, child: Text(lastGame))));
+      if (lastGame.length > 4) {
+        cells.add(SizedBox(height: DEFAULT_HEIGHT,
+            width: WIDTH_LAST_GAME,
+            child: Align(
+                alignment: Alignment.topCenter, child: Text(lastGame, style: TextStyle(fontSize: 12)))));
+      } else {
+        cells.add(SizedBox(height: DEFAULT_HEIGHT,
+            width: WIDTH_LAST_GAME,
+            child: Align(
+                alignment: Alignment.topCenter, child: Text(lastGame))));
+      }
     }
 
     return Row(children: cells);
