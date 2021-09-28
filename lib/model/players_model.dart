@@ -1,32 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:football_club/model/player.dart';
+import 'package:football_club/utils/ObjectReader.dart';
+import 'package:football_club/utils/ObjectWriter.dart';
 import 'package:hive/hive.dart';
 
 class PlayersModel with ChangeNotifier {
+  bool _boxInitialized = false;
   String _activeSeason;
   bool isWithNew = false;
   int indexOfEdit;
   String _key;
 
-  updateActiveSeason(String newActiveSeason) async {
-    print("Update active season for Players Model on $newActiveSeason");
+  updateActiveSeason(String newActiveSeason) {
+    _boxInitialized = false;
+    var initFuture = init(newActiveSeason);
+    initFuture.then((voidValue){
+      print("Update active season for Players Model on $newActiveSeason");
+      _boxInitialized = true;
+      notifyListeners();
+    });
+  }
 
+  Future<void> init(String newActiveSeason) async {
     if (newActiveSeason != _activeSeason) {
       _activeSeason = newActiveSeason;
       _key = "players_$_activeSeason";
       await Hive.openBox<Player>(_key);
-      notifyListeners();
     }
   }
 
   List<Player> getPlayers() {
-    if (_key == null) {
+    if (!_boxInitialized || _key == null) {
       return [];
     } else {
       var box = Hive.box<Player>(_key);
       return box.values.toList();
     }
   }
+  Future<String> serialize(String seasonKey) async {
+    String playerKey = "players_$seasonKey";
+    await Hive.openBox<Player>(playerKey);
+    var box = Hive.box<Player>(playerKey);
+    List<Player> players =  box.values.toList();
+    ObjectWriter objectWriter = new ObjectWriter();
+    objectWriter.writeInt(players.length);
+    for (Player player in players) {
+      Player.serialize(objectWriter, player);
+    }
+    return objectWriter.getValue();
+  }
+  Future<void> deserialize(ObjectReader objectReader, String seasonKey) async {
+    String playerKey = "players_$seasonKey";
+    if (playerKey != _key) {
+      await Hive.openBox<Player>(playerKey);
+    }
+    var box = Hive.box<Player>(playerKey);
+    await box.clear();
+
+    int n = objectReader.readInt();
+    for (int i = 0; i < n; i++) {
+      await box.add(Player.deserialize(objectReader));
+    }
+    print("Restored ${box.length} players");
+    if (playerKey != _key) {
+      await box.close();
+    }
+  }
+
   void addNewPlayer() {
     isWithNew = true;
     notifyListeners();

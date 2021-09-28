@@ -14,7 +14,7 @@ description: Application which allows to bring more competition in your game.
 version: 1.0.5+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.5.2 <3.0.0"
 
 dependencies:
   flutter:
