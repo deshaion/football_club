@@ -1,3 +1,5 @@
+import 'package:football_club/utils/ObjectReader.dart';
+import 'package:football_club/utils/ObjectWriter.dart';
 import 'package:football_club/utils/date_util.dart';
 import 'package:hive/hive.dart';
 
@@ -27,4 +29,29 @@ class Game extends HiveObject {
 
   String get score => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2} ($score_team1_period1 : $score_team2_period1)" + (teamWinByPenalty == 0 ? "" : " Team ${teamWinByPenalty} win");
   String get scoreShort => "${score_team1_period1 + score_team1_period2}:${score_team2_period1 + score_team2_period2}";
+
+  static void serialize(ObjectWriter objectWriter, Game game) {
+    objectWriter
+        .writeInt(game.date)
+        .writeListInt(game.team1)
+        .writeListInt(game.team2)
+        .writeInt(game.score_team1_period1)
+        .writeInt(game.score_team1_period2)
+        .writeInt(game.score_team2_period1)
+        .writeInt(game.score_team2_period2)
+        .writeInt(game.teamWinByPenalty);
+  }
+
+  static Game deserialize(ObjectReader objectReader) {
+    return new Game(
+      objectReader.readInt(),
+      objectReader.readListInt(),
+      objectReader.readListInt(),
+      objectReader.readInt(),
+      objectReader.readInt(),
+      objectReader.readInt(),
+      objectReader.readInt(),
+      objectReader.readInt()
+    );
+  }
 }
