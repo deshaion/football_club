@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:football_club/model/games_model.dart';
 import 'package:football_club/model/players_model.dart';
@@ -60,7 +59,7 @@ class NewSeason extends StatelessWidget {
   final bool isWithNew;
   final Function onSave;
 
-  NewSeason({this.isWithNew, this.onSave});
+  NewSeason({required this.isWithNew, required this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -72,29 +71,29 @@ class NewSeason extends StatelessWidget {
 
 class SeasonItem extends StatelessWidget {
   final String name;
-  final Function onTap;
-  final Function onActivate;
+  final void Function() onTap;
+  final void Function() onActivate;
   final bool active;
   final bool expanded;
-  final Function onSavePathToBackup;
+  final void Function(String) onSavePathToBackup;
   final String backupPath;
-  final Function onDump;
-  final Function onRestore;
+  final void Function() onDump;
+  final void Function() onRestore;
 
   final String totalGamesForBeingInRating;
   final String amountOfGamesForCheckingInRating;
   final String percentForBeingInRating;
   final String remainGamesForChecking;
 
-  final Function onUpdateTotalGames;
-  final Function onUpdatePercent;
-  final Function onUpdateStartChecking;
-  final Function onUpdateRemainChecking;
+  final void Function(String) onUpdateTotalGames;
+  final void Function(String) onUpdatePercent;
+  final void Function(String) onUpdateStartChecking;
+  final void Function(String) onUpdateRemainChecking;
 
-  SeasonItem({this.name, this.onTap, this.onActivate, this.active, this.expanded,
-    this.onSavePathToBackup, this.backupPath, this.onDump, this.onRestore,
-    this.totalGamesForBeingInRating, this.percentForBeingInRating, this.amountOfGamesForCheckingInRating, this.remainGamesForChecking,
-    this.onUpdateTotalGames, this.onUpdatePercent, this.onUpdateStartChecking, this.onUpdateRemainChecking
+  SeasonItem({required this.name, required this.onTap, required this.onActivate, required this.active, required this.expanded,
+    required this.onSavePathToBackup, required this.backupPath, required this.onDump, required this.onRestore,
+    required this.totalGamesForBeingInRating, required this.percentForBeingInRating, required this.amountOfGamesForCheckingInRating, required this.remainGamesForChecking,
+    required this.onUpdateTotalGames, required this.onUpdatePercent, required this.onUpdateStartChecking, required this.onUpdateRemainChecking
   });
 
   @override
@@ -115,10 +114,10 @@ class SeasonItem extends StatelessWidget {
 
 class SeasonNameItem extends StatelessWidget {
   final String name;
-  final Function onTap;
+  final void Function() onTap;
   final bool active;
 
-  SeasonNameItem({this.name, this.onTap, this.active});
+  SeasonNameItem({required this.name, required this.onTap, required this.active});
 
   @override
   Widget build(BuildContext context) {
@@ -143,21 +142,21 @@ class SeasonNameItem extends StatelessWidget {
 }
 
 class SeasonPropertiesItem extends StatelessWidget {
-  final Function onActivate;
-  final Function onSavePathToBackup;
+  final void Function() onActivate;
+  final void Function(String) onSavePathToBackup;
   final String backupPath;
-  final Function onDump;
-  final Function onRestore;
+  final void Function() onDump;
+  final void Function() onRestore;
 
   final String totalGamesForBeingInRating;
   final String amountOfGamesForCheckingInRating;
   final String percentForBeingInRating;
   final String remainGamesForChecking;
 
-  final Function onUpdateTotalGames;
-  final Function onUpdatePercent;
-  final Function onUpdateStartChecking;
-  final Function onUpdateRemainChecking;
+  final void Function(String) onUpdateTotalGames;
+  final void Function(String) onUpdatePercent;
+  final void Function(String) onUpdateStartChecking;
+  final void Function(String) onUpdateRemainChecking;
 
   SeasonPropertiesItem(this.onActivate, this.backupPath, this.onSavePathToBackup, this.onDump, this.onRestore,
       this.totalGamesForBeingInRating, this.percentForBeingInRating, this.amountOfGamesForCheckingInRating, this.remainGamesForChecking,
@@ -191,7 +190,7 @@ class SeasonPropertiesItem extends StatelessWidget {
 
 class ButtonItem extends StatelessWidget {
   final String label;
-  final Function onTap;
+  final void Function() onTap;
 
   ButtonItem(this.label, this.onTap);
 
@@ -212,10 +211,10 @@ class ButtonItem extends StatelessWidget {
 }
 
 class BackupItem extends StatelessWidget {
-  final Function onSavePathToBackup;
+  final void Function(String) onSavePathToBackup;
   final String backupPath;
-  final Function onDump;
-  final Function onRestore;
+  final void Function() onDump;
+  final void Function() onRestore;
 
   BackupItem(this.onSavePathToBackup, this.backupPath, this.onDump, this.onRestore);
 

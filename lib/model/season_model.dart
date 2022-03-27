@@ -9,21 +9,21 @@ import 'package:football_club/utils/date_util.dart';
 import 'package:hive/hive.dart';
 
 class SeasonModel with ChangeNotifier {
-  String activeSeason;
+  String activeSeason = "";
   int expandedIndex = -1;
   List<String> seasons = [];
   bool isWithNew = false;
   String backupPath = "";
 
-  int totalGamesForBeingInRating;
-  int amountOfGamesForCheckingInRating;
-  int percentForBeingInRating;
-  int remainGamesForChecking;
+  int totalGamesForBeingInRating = 60;
+  int amountOfGamesForCheckingInRating = 17;
+  int percentForBeingInRating = 40;
+  int remainGamesForChecking = 16;
 
   SeasonModel() {
     var settingsBox = Hive.box(Hive_Settings);
-    activeSeason = settingsBox.get("activeSeason");
-    backupPath = settingsBox.get("backupPath");
+    activeSeason = settingsBox.get("activeSeason", defaultValue: "");
+    backupPath = settingsBox.get("backupPath", defaultValue: "");
     totalGamesForBeingInRating = settingsBox.get("totalGamesForBeingInRating", defaultValue: 60);
     amountOfGamesForCheckingInRating = settingsBox.get("amountOfGamesForCheckingInRating", defaultValue: 17);
     percentForBeingInRating = settingsBox.get("percentForBeingInRating", defaultValue: 40);
@@ -56,7 +56,7 @@ class SeasonModel with ChangeNotifier {
   }
 
   String getActiveSeasonText() {
-    if (activeSeason == null) {
+    if (activeSeason == "") {
       return "Please, choose active season";
     } else {
       return activeSeason;

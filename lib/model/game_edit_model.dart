@@ -65,8 +65,8 @@ class GameEditModel with ChangeNotifier {
     print("${_game.score_team1_period1} - ${_game.score_team2_period1} | ${_game.score_team1_period2} - ${_game.score_team2_period2}");
   }
 
-  updatePenaltyWinTeam(int newValue) {
-    _game.teamWinByPenalty = newValue;
+  updatePenaltyWinTeam(int? newValue) {
+    _game.teamWinByPenalty = newValue!;
     notifyListeners();
   }
 

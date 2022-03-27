@@ -15,7 +15,7 @@ class ScoreModel with ChangeNotifier {
   List<String> get lastGames => _lastGames;
   List<String> get lastGamesScores => _lastGamesScores;
   List<ScoreRow> get scoreList => _score;
-  String _info;
+  String _info = "";
   String get info => _info;
 
   void updateGames(List<Game> games) {
@@ -37,7 +37,7 @@ class ScoreModel with ChangeNotifier {
     }
 
     _games.sort((a, b) => b.date.compareTo(a.date));
-    int lastDate;
+    int? lastDate;
     if (_games.length >= 1) {
       lastDate = _games[0].date;
     }
@@ -72,7 +72,7 @@ class ScoreModel with ChangeNotifier {
 
     bool calcChange = gamesCount > 0;
     if (gamesCount > 0) {
-      _score.sort((a, b) => a.playerId.compareTo(b.playerId));
+      _score.sort((a, b) => a.playerId!.compareTo(b.playerId!));
     }
 
     _lastGames = [];
@@ -132,7 +132,7 @@ class ScoreModel with ChangeNotifier {
     } else if (a.gameAmount != b.gameAmount) {
       return b.gameAmount.compareTo(a.gameAmount);
     } else {
-      return a.playerId.compareTo(b.playerId);
+      return a.playerId!.compareTo(b.playerId!);
     }
   }
 
@@ -172,6 +172,15 @@ class ScoreModel with ChangeNotifier {
       pointsTransferTeam2Begin = (
             _calcPointsOld(game.score_team2_period1, game.score_team1_period1, false, playersInTeam) +
             _calcPointsOld(game.score_team1_period2, game.score_team2_period2, false, playersInTeam)) / 2;
+    } else if (game.date < new DateTime(2022, 3, 25).millisecondsSinceEpoch) {
+      pointsTeam1 = _calcPoints_270322(game.score_team1_period1 + game.score_team1_period2, game.score_team2_period1 + game.score_team2_period2, game.teamWinByPenalty == 1, playersInTeam);
+      pointsTeam2 = _calcPoints_270322(game.score_team2_period1 + game.score_team2_period2, game.score_team1_period1 + game.score_team1_period2, game.teamWinByPenalty == 2, playersInTeam);
+      pointsTransferTeam1Begin = (
+              _calcPoints_270322(game.score_team1_period1, game.score_team2_period1, false, playersInTeam) +
+              _calcPoints_270322(game.score_team2_period2, game.score_team1_period2, false, playersInTeam)) / 2;
+      pointsTransferTeam2Begin = (
+              _calcPoints_270322(game.score_team2_period1, game.score_team1_period1, false, playersInTeam) +
+              _calcPoints_270322(game.score_team1_period2, game.score_team2_period2, false, playersInTeam)) / 2;
     }
 
     for(var i = 0; i < playersInTeam; i++) {
@@ -216,7 +225,39 @@ class ScoreModel with ChangeNotifier {
     } else if (score2 > score1) {
       print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = 1");
       return 1;
-    } else if (playersInTeam > 3) { // rule 3, 3, 4, 4, 4
+    } else if (playersInTeam > 3) { // rule 3, 4, 4, 4, 4
+      num points = 2;
+      int diff = score1 - score2;
+      if (diff >= 3) {
+        points++;
+        diff -= 3;
+      }
+      points += (diff / 4).floor();
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${points}");
+      return points;
+    } else { // players in team are 3
+      num points = 2;
+      int diff = score1 - score2;
+      if (diff >= 5) {
+        points++;
+      }
+      diff -= 5;
+      if (diff < 0) {
+        diff = 0;
+      }
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${points + (diff / 4).floor()}");
+      return points + (diff / 4).floor();
+    }
+  }
+
+  num _calcPoints_270322(int score1, int score2, bool teamWinByPenalty, int playersInTeam) {
+    if (score1 == score2) {
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = ${teamWinByPenalty ? 2 : 1.5}");
+      return teamWinByPenalty ? 2 : 1.5;
+    } else if (score2 > score1) {
+      print("score $score1-$score2 win $teamWinByPenalty for $playersInTeam = 1");
+      return 1;
+    } else if (playersInTeam > 3) { // rule 3, 4, 4, 4, 4
       num points = 2;
       int diff = score1 - score2;
       if (diff >= 3) {
@@ -273,7 +314,7 @@ class ScoreModel with ChangeNotifier {
     }
   }
 
-  gameDaysTillSeasonEnd(int lastDate, int totalGamesForBeingInRating) {
+  gameDaysTillSeasonEnd(int? lastDate, int totalGamesForBeingInRating) {
     if (lastDate == null) {
       return totalGamesForBeingInRating;
     }

@@ -14,7 +14,7 @@ class GameAddEditPage extends PageContainerBase {
   Widget get body => Game(gameIdx);
   String get pageTitle => "Edit game";
   Widget get actionButton => MyActionButton();
-  Widget get menuDrawer => null;
+  Widget? get menuDrawer => null;
 }
 
 class Game extends StatelessWidget {
@@ -68,7 +68,7 @@ class DateRow extends StatelessWidget {
 
   Future<Null> _selectDate(BuildContext context, GameEditModel model) async {
     final now = DateTime.now();
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: new DateTime(now.year, now.month, now.day),
         firstDate: DateTime(2017, 1),
@@ -100,28 +100,28 @@ class Score extends StatelessWidget {
                 Text("Score:"),
                 Container(width: 20, margin: EdgeInsets.only(left: 5), child:
                   TextField(controller: TextEditingController(text: model.scoreTeam1),
-                    inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9]"))],
+                    inputFormatters: [FilteringTextInputFormatter(RegExp("[0-9]"), allow: true)],
                     onSubmitted: (String value) => model.updateScoreTeam1(value),
                     onChanged: (String value) => model.updateScoreTeam1(value),
                   )),
                 Container(margin: EdgeInsets.only(left: 5), child:Text("-")),
                 Container(width: 20, margin: EdgeInsets.only(left: 5), child:
                   TextField(controller: TextEditingController(text: model.scoreTeam2),
-                    inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9]"))],
+                    inputFormatters: [FilteringTextInputFormatter(RegExp("[0-9]"), allow: true)],
                     onSubmitted: (String value) => model.updateScoreTeam2(value),
                     onChanged: (String value) => model.updateScoreTeam2(value),
                   )),
                 Container(margin: EdgeInsets.only(left: 10), child:Text("(")),
                 Container(width: 20, margin: EdgeInsets.only(left: 1), child:
                   TextField(controller: TextEditingController(text: model.scoreTeam1Period1),
-                    inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9]"))],
+                    inputFormatters: [FilteringTextInputFormatter(RegExp("[0-9]"), allow: true)],
                     onSubmitted: (String value) => model.updateScoreTeam1Period1(value),
                     onChanged: (String value) => model.updateScoreTeam1Period1(value),
                   )),
                 Container(margin: EdgeInsets.only(left: 7), child:Text("-")),
                 Container(width: 20, margin: EdgeInsets.only(left: 7), child:
                   TextField(controller: TextEditingController(text: model.scoreTeam2Period1),
-                    inputFormatters: [WhitelistingTextInputFormatter(RegExp("[0-9]"))],
+                    inputFormatters: [FilteringTextInputFormatter(RegExp("[0-9]"), allow: true)],
                     onSubmitted: (String value) => model.updateScoreTeam2Period1(value),
                     onChanged: (String value) => model.updateScoreTeam2Period1(value),
                   )),
@@ -137,7 +137,7 @@ class Score extends StatelessWidget {
                     height: 2,
                     color: Colors.deepPurpleAccent,
                   ),
-                  onChanged: (int newValue) => model.updatePenaltyWinTeam(newValue),
+                  onChanged: (int? newValue) => model.updatePenaltyWinTeam(newValue),
                   items: <int>[0, 1, 2].map<DropdownMenuItem<int>>((int value) {
                     String text = "None";
                     if (value == 1) {
@@ -220,7 +220,7 @@ class OtherPlayers extends StatelessWidget {
 
 class PlayerItem extends StatelessWidget {
   final String player;
-  final Function onDismissed;
+  final void Function(DismissDirection) onDismissed;
 
   PlayerItem(this.player, this.onDismissed);
 

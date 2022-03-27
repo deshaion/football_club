@@ -1,20 +1,16 @@
 class ScoreRow {
-  int position;
-  int playerId;
-  num points;
-  int gameAmount;
+  int position = 0;
+  int? playerId;
+  num points = 0;
+  int gameAmount = 0;
   double get rating => gameAmount == 0 ? 0 : points / gameAmount;
 
-  int change;
-  List<num> lastGames;
+  int change = 0;
+  List<num?> lastGames = [];
 
-  int type;
+  int type = 0;
 
   ScoreRow(this.playerId, bool inClub) {
-    points = 0;
-    gameAmount = 0;
-    lastGames = [];
-
     type = inClub ? 0 : 2;
   }
 }

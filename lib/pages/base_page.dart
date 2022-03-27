@@ -4,12 +4,12 @@ import 'package:football_club/menu/app_menu_drawer.dart';
 abstract class PageContainerBase extends StatelessWidget {
   Widget get body;
   String get pageTitle;
-  Widget get menuDrawer => AppMenu();
+  Widget? get menuDrawer => AppMenu();
   Widget get background => Container();
   Color get backgroundColor => Color(0xFFF7F7F7);
   Widget get actionButton => Container();
 
-  const PageContainerBase({Key key}) : super(key: key);
+  const PageContainerBase({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
