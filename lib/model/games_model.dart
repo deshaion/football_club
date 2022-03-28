@@ -10,6 +10,9 @@ class GamesModel with ChangeNotifier {
   String _key = "";
 
   updateActiveSeason(String newActiveSeason) {
+    if (newActiveSeason == "") {
+      return;
+    }
     _boxInitialized = false;
     var initFuture = init(newActiveSeason);
     initFuture.then((voidValue) {
