@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.indigo,
         ),
         initialRoute: RoutePaths.scorePage,
-        onGenerateRoute: Router.generateRoute,
+        onGenerateRoute: FCRouter.generateRoute,
       ),
     );
   }

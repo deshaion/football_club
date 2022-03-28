@@ -47,7 +47,7 @@ class NewPlayer extends StatelessWidget {
   final bool isWithNew;
   final Function onSave;
 
-  NewPlayer({this.isWithNew, this.onSave});
+  NewPlayer({required this.isWithNew, required this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +59,13 @@ class NewPlayer extends StatelessWidget {
 
 class DismissiblePlayerItem extends StatelessWidget {
   final Player player;
-  final Function onTapName;
-  final Function onTapInClub;
+  final void Function() onTapName;
+  final void Function() onTapInClub;
   final Function onEditName;
   final bool isNameEditable;
-  final Function onDismissed;
+  final void Function(DismissDirection) onDismissed;
 
-  DismissiblePlayerItem({this.player, this.isNameEditable, this.onTapName, this.onTapInClub, this.onEditName, this.onDismissed});
+  DismissiblePlayerItem({required this.player, required this.isNameEditable, required this.onTapName, required this.onTapInClub, required this.onEditName, required this.onDismissed});
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +80,12 @@ class DismissiblePlayerItem extends StatelessWidget {
 
 class PlayerItem extends StatelessWidget {
   final Player player;
-  final Function onTapName;
-  final Function onTapInClub;
+  final void Function() onTapName;
+  final void Function() onTapInClub;
   final Function onEditName;
   final bool isNameEditable;
 
-  PlayerItem({this.player, this.isNameEditable, this.onTapName, this.onTapInClub, this.onEditName});
+  PlayerItem({required this.player, required this.isNameEditable, required this.onTapName, required this.onTapInClub, required this.onEditName});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class EditablePlayerName extends StatelessWidget {
 
 class PlayerName extends StatelessWidget {
   final String name;
-  final Function onTap;
+  final void Function() onTap;
 
   PlayerName(this.name, this.onTap);
 
@@ -140,7 +140,7 @@ class PlayerName extends StatelessWidget {
 
 class InClubElement extends StatelessWidget {
   final bool inClub;
-  final Function onTap;
+  final void Function() onTap;
 
   InClubElement(this.inClub, this.onTap);
 

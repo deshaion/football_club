@@ -7,7 +7,7 @@ import 'package:football_club/pages/score_page.dart';
 import 'package:football_club/pages/seasons_page.dart';
 import 'package:football_club/utils/routes.dart';
 
-class Router {
+class FCRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RoutePaths.seasonsPage:

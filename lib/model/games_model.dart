@@ -6,10 +6,13 @@ import 'package:hive/hive.dart';
 
 class GamesModel with ChangeNotifier {
   bool _boxInitialized = false;
-  String _activeSeason;
-  String _key;
+  String _activeSeason = "";
+  String _key = "";
 
   updateActiveSeason(String newActiveSeason) {
+    if (newActiveSeason == "") {
+      return;
+    }
     _boxInitialized = false;
     var initFuture = init(newActiveSeason);
     initFuture.then((voidValue) {

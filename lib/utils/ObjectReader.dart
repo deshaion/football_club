@@ -4,9 +4,7 @@ class ObjectReader {
   String _buffer;
   int pos = 0;
 
-  ObjectReader(String buffer) {
-    this._buffer = buffer;
-  }
+  ObjectReader(this._buffer);
 
   int readInt() {
     if (pos >= _buffer.length) {

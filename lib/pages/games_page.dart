@@ -34,9 +34,9 @@ class Games extends StatelessWidget {
 class DismissibleGameItem extends StatelessWidget {
   final Game game;
   final PlayersModel players;
-  final Function onDismissed;
+  final void Function(DismissDirection) onDismissed;
 
-  DismissibleGameItem({this.game, this.players, this.onDismissed});
+  DismissibleGameItem({required this.game, required this.players, required this.onDismissed});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class GameItem extends StatelessWidget {
   final Game game;
   final PlayersModel players;
 
-  GameItem({this.game, this.players});
+  GameItem({required this.game, required this.players});
 
   @override
   Widget build(BuildContext context) {

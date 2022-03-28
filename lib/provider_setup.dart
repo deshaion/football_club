@@ -13,26 +13,22 @@ List<SingleChildWidget> providers = [
   ChangeNotifierProxyProvider<SeasonModel, PlayersModel>(
     create: (context) => PlayersModel(),
     update: (context, seasons, players) {
-      players.updateActiveSeason(seasons.activeSeason);
-      return players;
+      players?.updateActiveSeason(seasons.activeSeason);
+      return players!;
     },
   ),
   ChangeNotifierProxyProvider<SeasonModel, GamesModel>(
     create: (context) => GamesModel(),
     update: (context, seasons, games) {
-      if (seasons == null) {
-        print("seasons is null");
-        return games;
-      }
-      games.updateActiveSeason(seasons.activeSeason);
-      return games;
+      games?.updateActiveSeason(seasons.activeSeason);
+      return games!;
     },
   ),
   ChangeNotifierProxyProvider<GamesModel, ScoreModel>(
     create: (context) => ScoreModel(),
     update: (context, games, score) {
-      score.updateGames(games.getGames());
-      return score;
+      score?.updateGames(games.getGames());
+      return score!;
     },
   ),
   ChangeNotifierProvider<GameEditModel>(create: (context) => GameEditModel()),

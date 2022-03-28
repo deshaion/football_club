@@ -40,7 +40,7 @@ class Score extends StatelessWidget {
                     return Footer(score.lastGamesScores, score.info);
                   }
 
-                  return ScoreItem(row, index, players.getPlayers()[row.playerId]);
+                  return ScoreItem(row, index, players.getPlayers()[row.playerId!]);
                 }
               )
             )
@@ -117,7 +117,7 @@ class ScoreItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String textChange;
+    String? textChange;
     if (row.change != null && row.change > 0) {
       textChange = "↑${row.change}";
     } else if (row.change != null && row.change < 0) {
@@ -151,10 +151,10 @@ class ScoreItem extends StatelessWidget {
     }
     Decoration ratingDecor = BoxDecoration(color: ratingColor, border: border);
 
-    TextStyle posStyle = row.position <= 4 ? TextStyle(fontWeight: FontWeight.bold) : null;
-    TextStyle nameStyle = row.position == 1 ? TextStyle(fontWeight: FontWeight.bold) : null;
+    TextStyle? posStyle = row.position <= 4 ? TextStyle(fontWeight: FontWeight.bold) : null;
+    TextStyle? nameStyle = row.position == 1 ? TextStyle(fontWeight: FontWeight.bold) : null;
 
-    Widget posText = player.inClub ? Text(row.position.toString(), textAlign: TextAlign.right, style: posStyle) : null;
+    Widget? posText = player.inClub ? Text(row.position.toString(), textAlign: TextAlign.right, style: posStyle) : null;
 
     Decoration posDecor = BoxDecoration(color: Color.fromRGBO(212, 210, 210, 100), border: border);
 

@@ -6,12 +6,16 @@ import 'package:hive/hive.dart';
 
 class PlayersModel with ChangeNotifier {
   bool _boxInitialized = false;
-  String _activeSeason;
+  String? _activeSeason;
   bool isWithNew = false;
-  int indexOfEdit;
-  String _key;
+  int? indexOfEdit;
+  String? _key;
 
   updateActiveSeason(String newActiveSeason) {
+    if (newActiveSeason == "") {
+      return;
+    }
+
     _boxInitialized = false;
     var initFuture = init(newActiveSeason);
     initFuture.then((voidValue){
@@ -25,7 +29,7 @@ class PlayersModel with ChangeNotifier {
     if (newActiveSeason != _activeSeason) {
       _activeSeason = newActiveSeason;
       _key = "players_$_activeSeason";
-      await Hive.openBox<Player>(_key);
+      await Hive.openBox<Player>(_key!);
     }
   }
 
@@ -33,7 +37,7 @@ class PlayersModel with ChangeNotifier {
     if (!_boxInitialized || _key == null) {
       return [];
     } else {
-      var box = Hive.box<Player>(_key);
+      var box = Hive.box<Player>(_key!);
       return box.values.toList();
     }
   }
@@ -77,7 +81,7 @@ class PlayersModel with ChangeNotifier {
       return;
     }
     isWithNew = false;
-    var box = Hive.box<Player>(_key);
+    var box = Hive.box<Player>(_key!);
     box.add(Player(name));
 
     notifyListeners();
