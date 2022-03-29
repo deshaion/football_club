@@ -53,7 +53,7 @@ class GamesModel with ChangeNotifier {
     return objectWriter.getValue();
   }
 
-  Future<void> deserialize(ObjectReader objectReader, String seasonKey) async {
+  Future<void> deserialize(ObjectReader objectReader, String seasonKey, String version) async {
     String gameKey = "games_$seasonKey";
     if (gameKey != _key) {
       await Hive.openBox<Game>(gameKey);
@@ -63,7 +63,7 @@ class GamesModel with ChangeNotifier {
 
     int n = objectReader.readInt();
     for (int i = 0; i < n; i++) {
-      await box.add(Game.deserialize(objectReader));
+      await box.add(Game.deserialize(objectReader, version));
     }
 
     print("Restored ${box.length} games");

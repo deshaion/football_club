@@ -25,13 +25,14 @@ class GameAdapter extends TypeAdapter<Game> {
       fields[5] as int,
       fields[6] as int,
       fields[7] as int,
+      fields[8] == null ? 0 : fields[8] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Game obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.date)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class GameAdapter extends TypeAdapter<Game> {
       ..writeByte(6)
       ..write(obj.score_team2_period2)
       ..writeByte(7)
-      ..write(obj.teamWinByPenalty);
+      ..write(obj.teamWinByPenalty)
+      ..writeByte(8)
+      ..write(obj.gameType);
   }
 
   @override

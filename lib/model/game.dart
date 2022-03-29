@@ -15,20 +15,27 @@ class Game extends HiveObject {
   @HiveField(5) int score_team2_period1;
   @HiveField(6) int score_team2_period2;
   @HiveField(7) int teamWinByPenalty;
+  @HiveField(8, defaultValue: 0) int gameType; //0-None, 1-StarGame
 
-  Game.empty() : this(today(), [], [], 0, 0, 0, 0, 0);
+  Game.empty() : this(today(), [], [], 0, 0, 0, 0, 0, 0);
 
   Game(this.date, this.team1, this.team2, this.score_team1_period1,
       this.score_team1_period2, this.score_team2_period1,
-      this.score_team2_period2, this.teamWinByPenalty);
+      this.score_team2_period2, this.teamWinByPenalty, this.gameType);
 
   Game.clone(Game game): this(game.date, new List<int>.from(game.team1), new List<int>.from(game.team2),
       game.score_team1_period1, game.score_team1_period2, game.score_team2_period1,
-      game.score_team2_period2, game.teamWinByPenalty
+      game.score_team2_period2, game.teamWinByPenalty, game.gameType
   );
 
   String get score => "${score_team1_period1 + score_team1_period2} : ${score_team2_period1 + score_team2_period2} ($score_team1_period1 : $score_team2_period1)" + (teamWinByPenalty == 0 ? "" : " Team ${teamWinByPenalty} win");
   String get scoreShort => "${score_team1_period1 + score_team1_period2}:${score_team2_period1 + score_team2_period2}";
+  String gameTypeText() {
+    if (gameType == 1) {
+      return "Stars";
+    }
+    return "";
+  }
 
   static void serialize(ObjectWriter objectWriter, Game game) {
     objectWriter
@@ -39,19 +46,35 @@ class Game extends HiveObject {
         .writeInt(game.score_team1_period2)
         .writeInt(game.score_team2_period1)
         .writeInt(game.score_team2_period2)
-        .writeInt(game.teamWinByPenalty);
+        .writeInt(game.teamWinByPenalty)
+        .writeInt(game.gameType);
   }
 
-  static Game deserialize(ObjectReader objectReader) {
-    return new Game(
-      objectReader.readInt(),
-      objectReader.readListInt(),
-      objectReader.readListInt(),
-      objectReader.readInt(),
-      objectReader.readInt(),
-      objectReader.readInt(),
-      objectReader.readInt(),
-      objectReader.readInt()
-    );
+  static Game deserialize(ObjectReader objectReader, String version) {
+    if (version == "1") {
+      return new Game(
+          objectReader.readInt(),
+          objectReader.readListInt(),
+          objectReader.readListInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          0
+      );
+    } else {
+      return new Game(
+          objectReader.readInt(),
+          objectReader.readListInt(),
+          objectReader.readListInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt(),
+          objectReader.readInt()
+      );
+    }
   }
 }
