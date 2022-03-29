@@ -53,7 +53,7 @@ class PlayersModel with ChangeNotifier {
     }
     return objectWriter.getValue();
   }
-  Future<void> deserialize(ObjectReader objectReader, String seasonKey) async {
+  Future<void> deserialize(ObjectReader objectReader, String seasonKey, String version) async {
     String playerKey = "players_$seasonKey";
     if (playerKey != _key) {
       await Hive.openBox<Player>(playerKey);

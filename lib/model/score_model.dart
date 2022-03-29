@@ -183,6 +183,31 @@ class ScoreModel with ChangeNotifier {
               _calcPoints_270322(game.score_team1_period2, game.score_team2_period2, false, playersInTeam)) / 2;
     }
 
+    if (game.gameType == 1) { // it's star game
+      if (game.score_team2_period1 + game.score_team2_period2 > game.score_team1_period1 + game.score_team1_period2 ||
+          (game.score_team2_period1 + game.score_team2_period2 == game.score_team1_period1 + game.score_team1_period2 && game.teamWinByPenalty == 2)) {
+        print("Stars game: 2d team wins then points multiply 2");
+        for(var i = 0; i < game.team1.length; i++) {
+          _score[game.team1[i]].gameAmount++;
+          _score[game.team1[i]].points += pointsTeam1;
+          if (addToLast) {
+            _score[game.team1[i]].lastGames.add(pointsTeam1);
+          }
+        }
+        if (game.score_team2_period1 + game.score_team2_period2 == game.score_team1_period1 + game.score_team1_period2) {
+          pointsTeam2 = 1.5; // if draw then in star game 1.5 points
+        }
+        for(var i = 0; i < game.team2.length; i++) {
+          _score[game.team2[i]].gameAmount++;
+          _score[game.team2[i]].points += pointsTeam2 * 2;
+          if (addToLast) {
+            _score[game.team2[i]].lastGames.add(pointsTeam2 * 2);
+          }
+        }
+        return;
+      }
+    }
+
     for(var i = 0; i < playersInTeam; i++) {
       _score[game.team1[i]].gameAmount++;
       _score[game.team1[i]].points += pointsTeam1;

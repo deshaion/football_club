@@ -92,7 +92,7 @@ class SeasonModel with ChangeNotifier {
     String gamesString = await games;
     String playersString = await players;
 
-    String version = "1#";
+    String version = "2#";
     int timestamp = today();
     File backupFile = File('$path/${seasonName}_backup_$timestamp.txt');
     backupFile.writeAsString(version + playersString + gamesString);
@@ -116,15 +116,13 @@ class SeasonModel with ChangeNotifier {
     ObjectReader objectReader = new ObjectReader(data);
     String version = objectReader.readString();
 
-    if (version == "1") {
-      _restoreBackupVersion1(objectReader, season, games, players);
-    }
+    _restoreBackupVersion(objectReader, version, season, games, players);
   }
 
-  Future<void> _restoreBackupVersion1(ObjectReader objectReader, String season, GamesModel games, PlayersModel players) async {
-    print("Restore version 1");
-    await players.deserialize(objectReader, season);
-    await games.deserialize(objectReader, season);
+  Future<void> _restoreBackupVersion(ObjectReader objectReader, String version, String season, GamesModel games, PlayersModel players) async {
+    print("Restore version $version");
+    await players.deserialize(objectReader, season, version);
+    await games.deserialize(objectReader, season, version);
 
     if (season == activeSeason) {
       players.notifyListeners();

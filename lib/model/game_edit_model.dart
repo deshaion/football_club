@@ -13,6 +13,7 @@ class GameEditModel with ChangeNotifier {
   String get scoreTeam1Period1 => _game.score_team1_period1.toString();
   String get scoreTeam2Period1 => _game.score_team2_period1.toString();
   int get teamWinByPenalty => _game.teamWinByPenalty;
+  int get gameType => _game.gameType;
 
   List<int> get team1List => _game.team1;
   List<int> get team2List => _game.team2;
@@ -67,6 +68,11 @@ class GameEditModel with ChangeNotifier {
 
   updatePenaltyWinTeam(int? newValue) {
     _game.teamWinByPenalty = newValue!;
+    notifyListeners();
+  }
+
+  updateGameType(int? newValue) {
+    _game.gameType = newValue!;
     notifyListeners();
   }
 

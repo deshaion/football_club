@@ -74,7 +74,8 @@ class GameItem extends StatelessWidget {
             Row(
               children: <Widget>[
                 Text(getFormattedDate(game.date)),
-                Container(margin: EdgeInsets.only(left: 10),child:Text(game.score, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16.0)))
+                Container(margin: EdgeInsets.only(left: 10),child:Text(game.score, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16.0))),
+                Container(margin: EdgeInsets.only(left: 10),child:Text(game.gameTypeText(), style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16.0))),
               ],
             ),
             Text(players.teamDescription(game.team1)),

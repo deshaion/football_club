@@ -41,8 +41,7 @@ class DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container (
         child: Consumer<GameEditModel>(builder: (context, model, child) {
-          return GestureDetector(
-              child: Container(
+          return Container(
                 margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
@@ -55,12 +54,37 @@ class DateRow extends StatelessWidget {
                           color: Color.fromARGB(80, 0, 0, 0))
                     ]),
                 child: Row(children: <Widget>[
-                  Icon(Icons.calendar_today),
-                  Text(getFormattedDate(model.game.date))
+                  GestureDetector(
+                    child: Container(child: Row(children: [
+                      Icon(Icons.calendar_today),
+                      Text(getFormattedDate(model.game.date)),
+                    ])),
+                    onTap: () => _selectDate(context, model),
+                  ),
+                  Container(margin: EdgeInsets.only(left: 2), child:Text("Game:")),
+                  Container(margin: EdgeInsets.only(left: 2), child:DropdownButton<int>(
+                    value: model.gameType,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: (int? newValue) => model.updateGameType(newValue),
+                    items: <int>[0, 1].map<DropdownMenuItem<int>>((int value) {
+                      String text = "Ordinal";
+                      if (value == 1) {
+                        text = "Stars";
+                      }
+
+                      return DropdownMenuItem<int>(value: value, child: Text(text));
+                    }).toList(),
+                  )
+                  ),
                 ]),
-              ),
-              onTap: () => _selectDate(context, model),
-          );
+              );
         }
         )
     );
@@ -164,7 +188,7 @@ class Team1 extends StatelessWidget {
     return Container(margin: EdgeInsets.symmetric(horizontal: 10),
       child: Column(children: <Widget>[
         Container(child: Text("Team 1", textAlign: TextAlign.center)),
-        Expanded(child: Consumer2<GameEditModel, PlayersModel>(builder: (conext, game, players, child) {
+        Expanded(child: Consumer2<GameEditModel, PlayersModel>(builder: (context, game, players, child) {
           return ListView.builder(
               itemCount: game.team1List.length,
               itemBuilder: (context, index) => PlayerItem(players.getPlayers()[game.team1List[index]].name,
@@ -184,7 +208,7 @@ class Team2 extends StatelessWidget {
     return Container(margin: EdgeInsets.symmetric(horizontal: 10),
       child: Column(children: <Widget>[
         Container(child: Text("Team 2", textAlign: TextAlign.center)),
-        Expanded(child: Consumer2<GameEditModel, PlayersModel>(builder: (conext, game, players, child) {
+        Expanded(child: Consumer2<GameEditModel, PlayersModel>(builder: (context, game, players, child) {
           return ListView.builder(
               itemCount: game.team2List.length,
               itemBuilder: (context, index) => PlayerItem(players.getPlayers()[game.team2List[index]].name,
